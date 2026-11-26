@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#182520">
+  <title>Осмотр инфраструктуры · МГТС</title>
+  <link rel="icon" type="image/png" href="/ui/mark.png">
+  <link rel="stylesheet" href="/ui/icons.css">
+  <link rel="stylesheet" href="/ui/app.css">
+  <script defer src="/ui/app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">К рабочей области</a>
+<header class="masthead">
+  <div class="header-inner">
+    <a class="brand" href="/" aria-label="МГТС, главная"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><b>МГТС</b></a>
+    <span class="product">Мониторинг</span>
+    <nav class="nav" aria-label="Основная навигация">
+      <a class="current" href="#main" id="nav-work"><i class="ico i-work"></i>Осмотр</a>
+      <a href="#journal" id="nav-log"><i class="ico i-grid"></i>Журнал</a>
+      <a href="/about"><i class="ico i-about"></i>О системе</a>
+      <a href="/defense">Демо</a>
+    </nav>
+    <span class="local"><i></i>Локальная обработка</span>
+  </div>
+</header>
+<main class="shell" id="main">
+  <div class="intro">
+    <div><h1>Осмотр инфраструктуры</h1><p id="scope">Демонстрационный осмотр по снимкам из датасета</p></div>
+    <div class="actions">
+      <button type="button" id="demo" class="btn" aria-label="Проверить на тестовой выборке"><i class="ico i-test"></i>Тестовая выборка</button>
+      <button type="button" id="open-upload" class="btn primary"><i class="ico i-upload"></i>Загрузить файлы</button>
+    </div>
+  </div>
+  <p id="status" class="notice" role="status" aria-live="polite" hidden></p>
+
+  <section id="summary" class="metrics" aria-label="Сводка текущего осмотра">
+    <div class="metric"><span class="metric-icon"><i class="ico i-sources"></i></span><div><span class="metric-label">Файлов</span><strong id="m-files">—</strong></div></div>
+    <div class="metric"><span class="metric-icon mint"><i class="ico i-target"></i></span><div><span class="metric-label">Объектов найдено</span><strong id="m-objects">—</strong></div></div>
+    <div class="metric"><span class="metric-icon gold"><i class="ico i-review"></i></span><div><span class="metric-label">Требуют осмотра</span><strong id="m-review">—</strong></div></div>
+    <div class="metric"><span class="metric-icon clay"><i class="ico i-repair"></i></span><div><span class="metric-label">Кандидаты на ремонт</span><strong id="m-repair">—</strong></div></div>
+  </section>
+
+  <section id="results" class="workspace" aria-label="Результаты осмотра">
+    <div id="viewer-slot">
+      <section id="viewer" class="viewer" aria-label="Просмотр исходного кадра">
+        <div class="viewer-tools">
+          <h2><i class="ico i-scan"></i>Визуальный анализ</h2>
+          <div class="tool-set">
+            <button type="button" class="view-tool" id="toggle-boxes" aria-pressed="true" title="Показать или скрыть рамки"><i class="ico i-eye"></i><span>Рамки</span></button>
+            <button type="button" class="view-tool square" id="expand" aria-label="Развернуть кадр" title="Развернуть кадр"><i class="ico i-expand"></i></button>
+          </div>
+        </div>
+        <div class="viewport" id="viewport">
+          <div class="stage" id="stage" hidden><img id="original" alt="Исходный кадр"><div id="boxes"></div></div>
+          <div class="viewer-empty" id="viewer-empty"><i class="ico i-image"></i><span>Загрузка примера…</span></div>
+        </div>
+        <div class="viewer-foot">
+          <div class="media-file"><span class="file-icon"><i id="file-icon" class="ico i-image"></i></span>
+            <div><strong id="filename">—</strong><span id="file-meta"></span></div>
+          </div>
+          <div class="pager">
+            <button type="button" class="view-tool square" id="prev" aria-label="Предыдущий кадр" title="Предыдущий кадр"><i class="ico i-prev"></i></button>
+            <span id="page-no">— / —</span>
+            <button type="button" class="view-tool square" id="next" aria-label="Следующий кадр" title="Следующий кадр"><i class="ico i-next"></i></button>
+          </div>
+        </div>
+      </section>
+    </div>
+    <aside class="inspector panel" id="detail">
+      <div class="panel-title"><h2><i class="ico i-target"></i>Карточка объекта</h2><span class="index-token" id="asset-no">—</span></div>
+      <div class="inspector-body" id="attributes">
+        <div><span id="asset-status" class="pill neutral" hidden></span><h3 id="asset-name">Выберите объект</h3><p id="asset-id" class="asset-id"></p></div>
+        <dl id="facts" class="facts"></dl>
+        <div id="recommendation" class="recommendation" hidden><div class="rec-label"><i class="ico i-recommend"></i>Рекомендация</div><p id="rec-text"></p></div>
+        <div id="player-wrap" hidden><button type="button" class="text-action" id="seek"><i class="ico i-play"></i>Открыть этот момент в видео</button><video id="player" controls playsinline preload="metadata" hidden></video></div>
+        <label class="truth-control" id="truth-control" hidden><input type="checkbox" id="truth"> Показать эталонную рамку</label>
+        <details id="metadata" class="metadata" hidden><summary>Сведения о файле<i class="ico i-down"></i></summary><dl id="meta-values" class="facts"></dl></details>
+      </div>
+    </aside>
+  </section>
+  <section class="panel journal" id="journal" aria-labelledby="journal-title">
+    <div class="journal-head">
+      <h2 id="journal-title">Журнал осмотра <span class="count" id="journal-count">0</span></h2>
+      <div class="log-actions">
+        <label class="filter"><input type="checkbox" id="review"><span class="switch" aria-hidden="true"></span>Требуют проверки</label>
+        <button type="button" id="download" class="btn compact" disabled><i class="ico i-download"></i>Скачать CSV</button>
+      </div>
+    </div>
+    <div class="table-scroll"><table class="log-table"><thead><tr><th>Источник</th><th>Объект</th><th>Состояние</th><th>Решение</th><th><span class="sr-only">Открыть</span></th></tr></thead><tbody id="objects"></tbody></table></div>
+    <div class="empty-log" id="filter-note" hidden><i class="ico i-listfilter"></i><p>По этому фильтру наблюдений нет.</p><button class="text-action" type="button" id="clear-filter">Показать все</button></div>
+  </section>
+
+  <section class="panel quality" id="quality" aria-labelledby="quality-title" hidden>
+    <div class="panel-title"><h2 id="quality-title"><i class="ico i-test"></i>Проверка на отложенных фото</h2></div>
+    <div class="quality-body"><div id="metrics" class="test-metrics"></div><p id="precision" class="muted"></p>
+      <details><summary>Сверить прогнозы с исходной разметкой<i class="ico i-down"></i></summary>
+        <div class="table-scroll"><table><thead><tr><th>Фотография</th><th>Эталон из таблицы МГТС</th><th>Прогноз</th></tr></thead><tbody id="checks"></tbody></table></div>
+      </details>
+    </div>
+  </section>
+</main>
+<dialog class="upload-dialog" id="upload-dialog" aria-labelledby="upload-title">
+  <form id="upload-form">
+    <div class="dialog-head"><div><h2 id="upload-title">Новый осмотр</h2><p>Выберите фотографии или один видеоролик.</p></div>
+      <button type="button" id="close-upload" class="icon-btn" aria-label="Закрыть загрузку"><i class="ico i-cross"></i></button></div>
+    <div class="dialog-body">
+      <label class="dropzone" id="dropzone">
+        <input type="file" id="input-files" multiple accept=".jpg,.jpeg,.png,.webp,.mp4,.mov" aria-label="Выбрать фото или видео">
+        <span class="drop-icon"><i class="ico i-cloud"></i></span>
+        <strong>Перетащите файлы сюда</strong><span>или <u>выберите на устройстве</u></span>
+      </label>
+      <p class="limit">До 30 фото общим размером 18 МБ или один MP4/MOV до 60 МБ.</p>
+      <ul id="file-list" class="file-list" aria-label="Выбранные файлы"></ul>
+      <p id="input-error" class="error-note" role="alert" hidden></p>
+    </div>
+    <div class="dialog-foot"><button type="button" id="cancel-upload" class="btn">Отмена</button><button type="submit" id="analyze" class="btn primary" disabled><i class="ico i-scan"></i>Анализировать</button></div>
+  </form>
+</dialog>
+<dialog id="lightbox" class="lightbox" aria-label="Увеличенный просмотр кадра"></dialog>
+</body></html>

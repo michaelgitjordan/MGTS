@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#182520">
+  <title>О системе · МГТС</title>
+  <link rel="icon" type="image/png" href="/ui/mark.png">
+  <link rel="stylesheet" href="/ui/icons.css">
+  <link rel="stylesheet" href="/ui/app.css">
+
+</head>
+<body><header class="masthead">
+  <div class="header-inner">
+    <a class="brand" href="/" aria-label="МГТС, главная"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><b>МГТС</b></a>
+    <span class="product">Мониторинг</span>
+    <nav class="nav" aria-label="Основная навигация">
+      <a href="/#main" id="nav-work"><i class="ico i-work"></i>Осмотр</a>
+      <a href="/#journal" id="nav-log"><i class="ico i-grid"></i>Журнал</a>
+      <a class="current" href="/about"><i class="ico i-about"></i>О системе</a>
+    </nav>
+    <span class="local"><i></i>Локальная обработка</span>
+  </div>
+</header><main class="shell doc-shell"><div class="doc-head"><a class="text-action" href="/">← Вернуться к осмотру</a><h1>Как работает прототип</h1></div><div class="doc-grid"><section class="panel doc-block"><h2><i class="ico i-target"></i>Что ищет система</h2><p>Телекоммуникационный климатический шкаф (ТКШ) и распределительный щит (РЩ) могут стоять на одной опоре. Каждое обнаружение получает свою рамку, прогноз состояния и рекомендацию.</p>
+<p>В исходных данных 61 фото с экспертными описаниями. Отдельный снимок с подписями показывает, как выглядят оба устройства. <a href="/guide">Открыть иллюстрацию из датасета</a></p></section><section class="panel doc-block"><h2><i class="ico i-cpu"></i>Как получается прогноз</h2><p>Детектор проверяет области разных размеров и ищет в них характерные контуры оборудования. Apple Vision извлекает визуальные признаки фрагментов. Модель отличает оборудование от фона, уточняет границы, определяет тип и оценивает состояние корпуса и покрытия.</p>
+<p>Слабое согласие модели с выбранным классом даёт рекомендацию осмотреть объект вручную. Повреждённые и непригодные кадры попадают в журнал с причиной отбраковки. ID в отчёте обозначает наблюдение в загруженном файле.</p></section><section class="panel doc-block"><h2><i class="ico i-test"></i>Как проверить качество</h2><p>Для обучения выделено 46 фото, для проверки — 15. Кнопка «Проверить на тестовой выборке» запускает обычный анализ. Затем система сравнивает результаты с Excel и размеченными для прототипа рамками. Основной объект засчитывается при пересечении рамок не менее половины их объединённой площади (IoU ≥ 0,5).</p></section><section class="panel doc-block"><h2><i class="ico i-video"></i>Как перейти к камере автомобиля</h2><p>Для загруженного видео прототип выбирает до 30 кадров и связывает похожие обнаружения на соседних кадрах. Для маршрута бригады понадобятся поток кадров с камеры и сопоставление наблюдений с реестром МГТС. Для проверки качества на дороге нужны размеченные поездки с пустыми кадрами, мелкими объектами и разными условиями съёмки.</p>
+<p>Чтобы проверить время и объединение кадров, загрузите пример из двух отложенных фотографий. <a href="/demo/video.mp4" download="mgts-demo.mp4">Скачать тестовый MP4</a></p></section></div></main></body></html>
